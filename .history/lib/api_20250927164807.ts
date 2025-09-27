@@ -2,7 +2,7 @@ import axios, {AxiosInstance, AxiosRequestConfig} from "axios";
 import Cookies from "js-cookie";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://202.180.218.186:9000/";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://192.168.1.154:9000/";
 
 // Utility function to get full image URL
 export const getImageUrl = (imagePath: string): string => {
