@@ -1,0 +1,140 @@
+import axios, {AxiosInstance, AxiosRequestConfig} from "axios";
+import Cookies from "js-cookie";
+
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://192.168.1.154:9000/";
+
+class ApiClient {
+  private client: AxiosInstance;
+
+  constructor() {
+    this.client = axios.create({
+      baseURL: API_BASE_URL,
+      timeout: 10000,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    // Request interceptor to add auth token
+    this.client.interceptors.request.use(
+      (config) => {
+        const token = Cookies.get("admin_token");
+        if (token && config.headers) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => {
+        return Promise.reject(error);
+      }
+    );
+
+    // Response interceptor to handle errors
+    this.client.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response?.status === 401) {
+          // Clear token and redirect to login
+          Cookies.remove("admin_token");
+          window.location.href = "/login";
+        }
+        return Promise.reject(error);
+      }
+    );
+  }
+
+  // Auth methods
+  async login(username: string, password: string) {
+    const response = await this.client.post("/auth/login", {
+      username,
+      password,
+    });
+    return response.data;
+  }
+
+  // Games methods
+  async getGames() {
+    const response = await this.client.get("/admin/games/game");
+    return response.data;
+  }
+
+  async createGame(gameData: {
+    title: string;
+    description: string;
+    path: string;
+    imageUrl: string;
+    mainTag: string;
+    additionalTags: string[];
+  }) {
+    const response = await this.client.post("/admin/games/game", gameData);
+    return response.data;
+  }
+
+  async updateGame(gameData: {
+    id: string;
+    title: string;
+    description: string;
+    path: string;
+    imageUrl: string;
+    mainTag: string;
+    additionalTags: string[];
+  }) {
+    const response = await this.client.put("/admin/games/game", gameData);
+    return response.data;
+  }
+
+  // Additional Tags methods
+  async getAdditionalTags() {
+    const response = await this.client.get("/admin/games/additional_tags");
+    return response.data;
+  }
+
+  async createAdditionalTag(name: string) {
+    const response = await this.client.post("/admin/games/additional_tags", {
+      name,
+    });
+    return response.data;
+  }
+
+  async deleteAdditionalTag(id: string) {
+    const response = await this.client.delete("/admin/games/additional_tags", {
+      data: {id},
+    });
+    return response.data;
+  }
+
+  // Users methods
+  async getUsers() {
+    const response = await this.client.get("/admin/user");
+    return response.data;
+  }
+
+  async setSubscription(id: string, isSubscribed: boolean) {
+    const response = await this.client.put("/admin/user/set_subscription", {
+      id,
+      isSubscribed,
+    });
+    return response.data;
+  }
+
+  // Image upload method
+  async uploadImage(file: File) {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    const response = await this.client.post(
+      "/admin/games/upload/picture",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
+  }
+}
+
+export const apiClient = new ApiClient();
+export default apiClient;
