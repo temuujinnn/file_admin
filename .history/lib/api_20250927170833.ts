@@ -84,8 +84,8 @@ class ApiClient {
         return response.data;
       } catch (error) {
         console.log(
-          `Failed with endpoint: ${endpoint}`
-          // error.response?.status
+          `Failed with endpoint: ${endpoint}`,
+          error.response?.status
         );
         // Continue to next endpoint
       }
