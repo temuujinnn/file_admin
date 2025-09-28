@@ -154,9 +154,9 @@ export default function GameForm({
 
       // If a new file is selected, upload it first
       if (selectedFile) {
-        toast.loading("Uploading image...", {id: "upload"});
+        toast.loading("Uploading image...", { id: "upload" });
         imageUrl = await uploadImage(selectedFile);
-        toast.success("Image uploaded successfully!", {id: "upload"});
+        toast.success("Image uploaded successfully!", { id: "upload" });
       }
 
       const gameData = {
@@ -190,24 +190,12 @@ export default function GameForm({
   };
 
   const handleTagToggle = (tagId: string) => {
-    const tag = availableTags.find((t) => t._id === tagId);
-    const isSelected = formData.additionalTags.includes(tagId);
-
     setFormData((prev) => ({
       ...prev,
-      additionalTags: isSelected
+      additionalTags: prev.additionalTags.includes(tagId)
         ? prev.additionalTags.filter((id) => id !== tagId)
         : [...prev.additionalTags, tagId],
     }));
-
-    // Show toast notification
-    if (tag) {
-      if (isSelected) {
-        toast.success(`Removed "${tag.name}" tag`);
-      } else {
-        toast.success(`Added "${tag.name}" tag`);
-      }
-    }
   };
 
   const handleSelectAllToggle = () => {

@@ -55,7 +55,7 @@ export default function GamesPage() {
     if (window.confirm(`Are you sure you want to delete "${gameTitle}"?`)) {
       try {
         await apiClient.deleteGame(gameId);
-        setGames(games.filter((game) => game._id !== gameId));
+        setGames(games.filter(game => game._id !== gameId));
         toast.success(`"${gameTitle}" deleted successfully!`);
       } catch (error) {
         console.error("Error deleting game:", error);

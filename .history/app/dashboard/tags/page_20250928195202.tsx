@@ -239,12 +239,12 @@ export default function TagsPage() {
                   </div>
                 </div>
                 <button
-                  onClick={() => handleDeleteTag(tag._id)}
-                  disabled={deletingId === tag._id}
+                  onClick={() => handleDeleteTag(tag.id)}
+                  disabled={deletingId === tag.id}
                   className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Delete tag"
                 >
-                  {deletingId === tag._id ? (
+                  {deletingId === tag.id ? (
                     <div className="w-4 h-4 animate-spin rounded-full border-2 border-red-600 border-t-transparent"></div>
                   ) : (
                     <Trash2 className="w-4 h-4" />

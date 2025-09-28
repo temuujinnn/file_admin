@@ -106,23 +106,18 @@ export default function GameForm({
     if (file) {
       // Validate file type
       if (!file.type.startsWith("image/")) {
-        const errorMessage = "Please select an image file";
-        setError(errorMessage);
-        toast.error(errorMessage);
+        setError("Please select an image file");
         return;
       }
 
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        const errorMessage = "File size must be less than 5MB";
-        setError(errorMessage);
-        toast.error(errorMessage);
+        setError("File size must be less than 5MB");
         return;
       }
 
       setSelectedFile(file);
       setError("");
-      toast.success("Image selected successfully!");
 
       // Create preview URL
       const url = URL.createObjectURL(file);
@@ -154,9 +149,7 @@ export default function GameForm({
 
       // If a new file is selected, upload it first
       if (selectedFile) {
-        toast.loading("Uploading image...", {id: "upload"});
         imageUrl = await uploadImage(selectedFile);
-        toast.success("Image uploaded successfully!", {id: "upload"});
       }
 
       const gameData = {
@@ -172,17 +165,13 @@ export default function GameForm({
           id: (game as any).id || (game as any)._id,
           ...gameData,
         });
-        toast.success("Game updated successfully!");
       } else {
         await apiClient.createGame(gameData);
-        toast.success("Game created successfully!");
       }
       onSave();
       onClose();
     } catch (error) {
-      const errorMessage = "Failed to save game. Please try again.";
-      setError(errorMessage);
-      toast.error(errorMessage);
+      setError("Failed to save game. Please try again.");
       console.error("Error saving game:", error);
     } finally {
       setLoading(false);
@@ -190,24 +179,12 @@ export default function GameForm({
   };
 
   const handleTagToggle = (tagId: string) => {
-    const tag = availableTags.find((t) => t._id === tagId);
-    const isSelected = formData.additionalTags.includes(tagId);
-
     setFormData((prev) => ({
       ...prev,
-      additionalTags: isSelected
+      additionalTags: prev.additionalTags.includes(tagId)
         ? prev.additionalTags.filter((id) => id !== tagId)
         : [...prev.additionalTags, tagId],
     }));
-
-    // Show toast notification
-    if (tag) {
-      if (isSelected) {
-        toast.success(`Removed "${tag.name}" tag`);
-      } else {
-        toast.success(`Added "${tag.name}" tag`);
-      }
-    }
   };
 
   const handleSelectAllToggle = () => {

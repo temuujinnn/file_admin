@@ -223,7 +223,7 @@ export default function TagsPage() {
       ) : (
         <div className="space-y-3">
           {filteredTags.map((tag) => (
-            <div key={tag._id} className="card">
+            <div key={tag.id} className="card">
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   <div className="w-3 h-3 bg-primary-500 rounded-full mr-3"></div>
@@ -239,12 +239,12 @@ export default function TagsPage() {
                   </div>
                 </div>
                 <button
-                  onClick={() => handleDeleteTag(tag._id)}
-                  disabled={deletingId === tag._id}
+                  onClick={() => handleDeleteTag(tag.id)}
+                  disabled={deletingId === tag.id}
                   className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Delete tag"
                 >
-                  {deletingId === tag._id ? (
+                  {deletingId === tag.id ? (
                     <div className="w-4 h-4 animate-spin rounded-full border-2 border-red-600 border-t-transparent"></div>
                   ) : (
                     <Trash2 className="w-4 h-4" />

@@ -138,7 +138,7 @@ class ApiClient {
 
   async deleteGame(id: string) {
     const response = await this.client.delete("/admin/games/game", {
-      data: {id},
+      data: { id },
     });
     return response.data;
   }

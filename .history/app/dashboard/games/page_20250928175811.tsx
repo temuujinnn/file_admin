@@ -1,7 +1,7 @@
 "use client";
 
 import {useState, useEffect} from "react";
-import {Plus, Edit, Search, Filter, Gamepad2, Trash2} from "lucide-react";
+import {Plus, Edit, Search, Filter, Gamepad2} from "lucide-react";
 import {Game, AdditionalTag} from "@/lib/types";
 import {apiClient, getImageUrl} from "@/lib/api";
 import GameForm from "@/components/Games/GameForm";
@@ -55,7 +55,7 @@ export default function GamesPage() {
     if (window.confirm(`Are you sure you want to delete "${gameTitle}"?`)) {
       try {
         await apiClient.deleteGame(gameId);
-        setGames(games.filter((game) => game._id !== gameId));
+        setGames(games.filter(game => game.id !== gameId));
         toast.success(`"${gameTitle}" deleted successfully!`);
       } catch (error) {
         console.error("Error deleting game:", error);
@@ -245,20 +245,13 @@ export default function GamesPage() {
                   )}
                 </div>
 
-                <div className="pt-2 flex space-x-2">
+                <div className="pt-2">
                   <button
                     onClick={() => handleEditGame(game)}
-                    className="btn-secondary flex-1 flex items-center justify-center"
+                    className="btn-secondary w-full flex items-center justify-center"
                   >
                     <Edit className="w-4 h-4 mr-2" />
                     Edit
-                  </button>
-                  <button
-                    onClick={() => handleDeleteGame(game._id, game.title)}
-                    className="btn-danger flex-1 flex items-center justify-center"
-                  >
-                    <Trash2 className="w-4 h-4 mr-2" />
-                    Delete
                   </button>
                 </div>
               </div>

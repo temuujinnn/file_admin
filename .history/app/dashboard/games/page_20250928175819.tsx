@@ -55,7 +55,7 @@ export default function GamesPage() {
     if (window.confirm(`Are you sure you want to delete "${gameTitle}"?`)) {
       try {
         await apiClient.deleteGame(gameId);
-        setGames(games.filter((game) => game._id !== gameId));
+        setGames(games.filter(game => game.id !== gameId));
         toast.success(`"${gameTitle}" deleted successfully!`);
       } catch (error) {
         console.error("Error deleting game:", error);
@@ -254,7 +254,7 @@ export default function GamesPage() {
                     Edit
                   </button>
                   <button
-                    onClick={() => handleDeleteGame(game._id, game.title)}
+                    onClick={() => handleDeleteGame(game.id, game.title)}
                     className="btn-danger flex-1 flex items-center justify-center"
                   >
                     <Trash2 className="w-4 h-4 mr-2" />
