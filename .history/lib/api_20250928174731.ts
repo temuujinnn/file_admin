@@ -2,7 +2,7 @@ import axios, {AxiosInstance, AxiosRequestConfig} from "axios";
 import Cookies from "js-cookie";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://192.168.1.154:9000/";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://202.180.218.186:9000/";
 
 // Utility function to get full image URL
 export const getImageUrl = (imagePath: string): string => {
@@ -64,11 +64,34 @@ class ApiClient {
 
   // Auth methods
   async login(username: string, password: string) {
-    const response = await this.client.post("/auth/login", {
-      username,
-      password,
-    });
-    return response.data;
+    // Try multiple possible login endpoints
+    const endpoints = [
+      "/admin/auth/login",
+      "/admin/login",
+      "/auth/login",
+      "/adminAuth/login",
+      "/userAuth/login",
+    ];
+
+    for (const endpoint of endpoints) {
+      try {
+        console.log(`Trying login endpoint: ${endpoint}`);
+        const response = await this.client.post(endpoint, {
+          username,
+          password,
+        });
+        console.log(`Success with endpoint: ${endpoint}`, response.data);
+        return response.data;
+      } catch (error) {
+        console.log(
+          `Failed with endpoint: ${endpoint}`
+          // error.response?.status
+        );
+        // Continue to next endpoint
+      }
+    }
+
+    throw new Error("All login endpoints failed");
   }
 
   // Games methods
@@ -80,7 +103,9 @@ class ApiClient {
       return games.map((game) => ({
         ...game,
         id: game._id || game.id,
-        additionalTags: (game.additionalTags || []).filter(tag => tag !== null && tag !== undefined),
+        additionalTags: (game.additionalTags || []).filter(
+          (tag: any) => tag !== null && tag !== undefined
+        ),
       }));
     }
     return games;

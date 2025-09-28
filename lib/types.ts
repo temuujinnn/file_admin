@@ -11,7 +11,7 @@ export interface Game {
 }
 
 export interface AdditionalTag {
-  id: string;
+  _id: string;
   name: string;
   createdAt?: string;
 }

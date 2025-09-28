@@ -64,6 +64,23 @@ export default function GameForm({
     }
   }, [isOpen, game]);
 
+  // Clean up invalid tag IDs when availableTags change
+  useEffect(() => {
+    if (availableTags.length > 0 && formData.additionalTags.length > 0) {
+      const validTagIds = availableTags.map((tag) => tag._id);
+      const validSelectedTags = formData.additionalTags.filter((id) =>
+        validTagIds.includes(id)
+      );
+
+      if (validSelectedTags.length !== formData.additionalTags.length) {
+        setFormData((prev) => ({
+          ...prev,
+          additionalTags: validSelectedTags,
+        }));
+      }
+    }
+  }, [availableTags]);
+
   // Cleanup preview URL when component unmounts
   useEffect(() => {
     return () => {
@@ -170,15 +187,36 @@ export default function GameForm({
   };
 
   const handleSelectAllToggle = () => {
-    const allTagIds = availableTags.map((tag) => tag.id);
-    const isAllSelected = allTagIds.every((id) =>
-      formData.additionalTags.includes(id)
-    );
+    const allTagIds = availableTags.map((tag) => tag._id);
+    const isAllSelected = isAllTagsSelected();
 
     setFormData((prev) => ({
       ...prev,
       additionalTags: isAllSelected ? [] : allTagIds,
     }));
+  };
+
+  const isAllTagsSelected = () => {
+    const allTagIds = availableTags.map((tag) => tag._id);
+    if (allTagIds.length === 0) return false;
+
+    // Check if all available tag IDs are in the selected tags
+    return allTagIds.every((id) => formData.additionalTags.includes(id));
+  };
+
+  const isIndeterminate = () => {
+    const allTagIds = availableTags.map((tag) => tag._id);
+    if (allTagIds.length === 0) return false;
+
+    // Count how many available tags are selected
+    const selectedAvailableTags = formData.additionalTags.filter((id) =>
+      allTagIds.includes(id)
+    );
+
+    return (
+      selectedAvailableTags.length > 0 &&
+      selectedAvailableTags.length < allTagIds.length
+    );
   };
 
   if (!isOpen) return null;
@@ -363,39 +401,17 @@ export default function GameForm({
                 Additional Tags
               </label>
               <div className="space-y-2 max-h-40 overflow-y-auto border border-gray-200 rounded-lg p-3">
-                {/* Select All Checkbox */}
-                {availableTags.length > 0 && (
-                  <div className="border-b border-gray-200 pb-2 mb-2">
-                    <div className="flex items-center font-medium">
-                      <input
-                        type="checkbox"
-                        id="select-all-tags"
-                        checked={availableTags.every((tag) =>
-                          formData.additionalTags.includes(tag.id)
-                        )}
-                        onChange={handleSelectAllToggle}
-                        className="mr-2 rounded"
-                      />
-                      <label
-                        htmlFor="select-all-tags"
-                        className="text-sm text-gray-700 font-medium cursor-pointer"
-                      >
-                        Select All ({availableTags.length} tags)
-                      </label>
-                    </div>
-                  </div>
-                )}
                 {availableTags.map((tag) => (
-                  <div key={tag.id} className="flex items-center">
+                  <div key={tag._id} className="flex items-center">
                     <input
                       type="checkbox"
-                      id={`tag-${tag.id}`}
-                      checked={formData.additionalTags.includes(tag.id)}
-                      onChange={() => handleTagToggle(tag.id)}
+                      id={`tag-${tag._id}`}
+                      checked={formData.additionalTags.includes(tag._id)}
+                      onChange={() => handleTagToggle(tag._id)}
                       className="mr-2 rounded"
                     />
                     <label
-                      htmlFor={`tag-${tag.id}`}
+                      htmlFor={`tag-${tag._id}`}
                       className="text-sm text-gray-700 cursor-pointer"
                     >
                       {tag.name}

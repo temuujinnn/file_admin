@@ -88,7 +88,7 @@ export default function GamesPage() {
 
   const getTagNames = (tagIds: string[]) => {
     return tagIds
-      .map((id) => tags.find((tag) => tag.id === id)?.name)
+      .map((id) => tags.find((tag) => tag._id === id)?.name)
       .filter(Boolean)
       .join(", ");
   };
