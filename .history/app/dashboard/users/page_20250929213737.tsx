@@ -317,6 +317,9 @@ export default function UsersPage() {
                         )}
                       </div>
                       <div>
+                        <p>
+                          <span className="font-medium">ID:</span> {user._id}
+                        </p>
                         {user.createdAt && (
                           <p>
                             <span className="font-medium">Joined:</span>{" "}

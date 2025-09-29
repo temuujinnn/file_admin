@@ -219,7 +219,7 @@ export default function UsersPage() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="text"
-                placeholder="Search users by name, username, email, phone, or ID..."
+                placeholder="Search users by username, email, or ID..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="input-field pl-10"
@@ -298,42 +298,29 @@ export default function UsersPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600">
                       <div>
                         {user.username && (
-                          <p>
-                            <span className="font-medium">Username:</span>{" "}
-                            {user.username}
-                          </p>
+                          <p><span className="font-medium">Username:</span> {user.username}</p>
                         )}
                         {user.email && (
-                          <p>
-                            <span className="font-medium">Email:</span>{" "}
-                            {user.email}
-                          </p>
+                          <p><span className="font-medium">Email:</span> {user.email}</p>
                         )}
                         {user.phone && (
-                          <p>
-                            <span className="font-medium">Phone:</span>{" "}
-                            {user.phone}
-                          </p>
+                          <p><span className="font-medium">Phone:</span> {user.phone}</p>
                         )}
                       </div>
                       <div>
+                        <p><span className="font-medium">ID:</span> {user._id}</p>
                         {user.createdAt && (
                           <p>
                             <span className="font-medium">Joined:</span>{" "}
                             {new Date(user.createdAt).toLocaleDateString()}
                           </p>
                         )}
-                        {user.subscriptionEndDate &&
-                          user.subscriptionEndDate !== "" && (
-                            <p>
-                              <span className="font-medium">
-                                Subscription ends:
-                              </span>{" "}
-                              {new Date(
-                                user.subscriptionEndDate
-                              ).toLocaleDateString()}
-                            </p>
-                          )}
+                        {user.subscriptionEndDate && user.subscriptionEndDate !== "" && (
+                          <p>
+                            <span className="font-medium">Subscription ends:</span>{" "}
+                            {new Date(user.subscriptionEndDate).toLocaleDateString()}
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>
