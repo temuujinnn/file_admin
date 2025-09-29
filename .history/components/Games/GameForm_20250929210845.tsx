@@ -38,36 +38,16 @@ export default function GameForm({
   useEffect(() => {
     if (isOpen) {
       fetchTags();
-
-      // Clear file selection state when modal opens (for both create and edit)
-      setSelectedFile(null);
-      setError("");
-
-      // Clear file input field
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-
       if (game) {
-        // Extract tag IDs from tag objects or use the IDs directly
-        const tagIds: string[] = game.additionalTags
-          .filter((tag) => tag !== null && tag !== undefined)
-          .map((tag) => {
-            // If tag is an object with _id, extract the _id
-            if (typeof tag === "object" && tag._id) {
-              return tag._id;
-            }
-            // If tag is already a string ID, use it directly
-            return tag as string;
-          });
-
         setFormData({
           title: game.title,
           description: game.description,
           path: game.path,
           imageUrl: game.imageUrl,
           mainTag: game.mainTag,
-          additionalTags: tagIds,
+          additionalTags: game.additionalTags.filter(
+            (tag) => tag !== null && tag !== undefined
+          ),
         });
         setPreviewUrl(getImageUrl(game.imageUrl));
       } else {
@@ -80,12 +60,8 @@ export default function GameForm({
           additionalTags: [],
         });
         setPreviewUrl("");
+        setSelectedFile(null);
       }
-    } else {
-      // Clear file selection state when modal closes
-      setSelectedFile(null);
-      setPreviewUrl("");
-      setError("");
     }
   }, [isOpen, game]);
 
@@ -99,9 +75,8 @@ export default function GameForm({
 
       // Only update if we're not editing a game or if there are actually invalid tags
       const isEditingGame = game !== null && game !== undefined;
-      const hasInvalidTags =
-        validSelectedTags.length !== formData.additionalTags.length;
-
+      const hasInvalidTags = validSelectedTags.length !== formData.additionalTags.length;
+      
       if (!isEditingGame && hasInvalidTags) {
         setFormData((prev) => ({
           ...prev,

@@ -38,16 +38,16 @@ export default function GameForm({
   useEffect(() => {
     if (isOpen) {
       fetchTags();
-
+      
       // Clear file selection state when modal opens (for both create and edit)
       setSelectedFile(null);
       setError("");
-
+      
       // Clear file input field
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
-
+      
       if (game) {
         // Extract tag IDs from tag objects or use the IDs directly
         const tagIds: string[] = game.additionalTags

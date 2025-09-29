@@ -38,36 +38,16 @@ export default function GameForm({
   useEffect(() => {
     if (isOpen) {
       fetchTags();
-
-      // Clear file selection state when modal opens (for both create and edit)
-      setSelectedFile(null);
-      setError("");
-
-      // Clear file input field
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-
       if (game) {
-        // Extract tag IDs from tag objects or use the IDs directly
-        const tagIds: string[] = game.additionalTags
-          .filter((tag) => tag !== null && tag !== undefined)
-          .map((tag) => {
-            // If tag is an object with _id, extract the _id
-            if (typeof tag === "object" && tag._id) {
-              return tag._id;
-            }
-            // If tag is already a string ID, use it directly
-            return tag as string;
-          });
-
         setFormData({
           title: game.title,
           description: game.description,
           path: game.path,
           imageUrl: game.imageUrl,
           mainTag: game.mainTag,
-          additionalTags: tagIds,
+          additionalTags: game.additionalTags.filter(
+            (tag) => tag !== null && tag !== undefined
+          ),
         });
         setPreviewUrl(getImageUrl(game.imageUrl));
       } else {
@@ -80,16 +60,12 @@ export default function GameForm({
           additionalTags: [],
         });
         setPreviewUrl("");
+        setSelectedFile(null);
       }
-    } else {
-      // Clear file selection state when modal closes
-      setSelectedFile(null);
-      setPreviewUrl("");
-      setError("");
     }
   }, [isOpen, game]);
 
-  // Clean up invalid tag IDs when availableTags change, but preserve existing tags when editing
+  // Clean up invalid tag IDs when availableTags change
   useEffect(() => {
     if (availableTags.length > 0 && formData.additionalTags.length > 0) {
       const validTagIds = availableTags.map((tag) => tag._id);
@@ -97,19 +73,14 @@ export default function GameForm({
         validTagIds.includes(id)
       );
 
-      // Only update if we're not editing a game or if there are actually invalid tags
-      const isEditingGame = game !== null && game !== undefined;
-      const hasInvalidTags =
-        validSelectedTags.length !== formData.additionalTags.length;
-
-      if (!isEditingGame && hasInvalidTags) {
+      if (validSelectedTags.length !== formData.additionalTags.length) {
         setFormData((prev) => ({
           ...prev,
           additionalTags: validSelectedTags,
         }));
       }
     }
-  }, [availableTags, game]);
+  }, [availableTags]);
 
   // Cleanup preview URL when component unmounts
   useEffect(() => {
@@ -418,7 +389,7 @@ export default function GameForm({
                   </label>
                   <input
                     type="url"
-                    value={`${getImageUrl(formData.imageUrl)}`}
+                    value={`${process.env.NEXT_PUBLIC_BASE_URL}/${formData.imageUrl}`}
                     onChange={(e) =>
                       setFormData({...formData, imageUrl: e.target.value})
                     }
