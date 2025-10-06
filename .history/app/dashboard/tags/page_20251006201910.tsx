@@ -64,9 +64,8 @@ export default function TagsPage() {
     setError("");
 
     try {
-      await apiClient.createAdditionalTag(newTagName.trim(), newTagBelongsTo);
+      await apiClient.createAdditionalTag(newTagName.trim());
       setNewTagName("");
-      setNewTagBelongsTo("Game");
       setShowCreateForm(false);
       await fetchTags();
     } catch (error) {
@@ -163,27 +162,12 @@ export default function TagsPage() {
                 autoFocus
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Belongs To *
-              </label>
-              <select
-                value={newTagBelongsTo}
-                onChange={(e) => setNewTagBelongsTo(e.target.value)}
-                className="input-field"
-                required
-              >
-                <option value="Game">Game</option>
-                <option value="Software">Software</option>
-              </select>
-            </div>
             <div className="flex justify-end space-x-3">
               <button
                 type="button"
                 onClick={() => {
                   setShowCreateForm(false);
                   setNewTagName("");
-                  setNewTagBelongsTo("Game");
                 }}
                 className="btn-secondary"
               >
@@ -238,77 +222,35 @@ export default function TagsPage() {
           )}
         </div>
       ) : (
-        <div className="space-y-6">
-          {/* Group tags by belongsTo */}
-          {Object.entries(
-            filteredTags.reduce((acc, tag) => {
-              const belongsTo = tag.belongsTo || "Unknown";
-              if (!acc[belongsTo]) {
-                acc[belongsTo] = [];
-              }
-              acc[belongsTo].push(tag);
-              return acc;
-            }, {} as Record<string, AdditionalTag[]>)
-          ).map(([belongsTo, groupedTags]) => (
-            <div key={belongsTo} className="space-y-3">
-              <div className="flex items-center space-x-2">
-                <h2 className="text-xl font-semibold text-gray-900">
-                  {belongsTo}
-                </h2>
-                <span className="px-2 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-full">
-                  {groupedTags.length}
-                </span>
-              </div>
-              <div className="space-y-3">
-                {groupedTags.map((tag) => (
-                  <div key={tag._id} className="card">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <div
-                          className={`w-3 h-3 rounded-full mr-3 ${
-                            belongsTo === "Game"
-                              ? "bg-blue-500"
-                              : "bg-purple-500"
-                          }`}
-                        ></div>
-                        <div>
-                          <h3 className="text-lg font-medium text-gray-900">
-                            {tag.name}
-                          </h3>
-                          <div className="flex items-center gap-2 mt-1">
-                            <span
-                              className={`px-2 py-0.5 text-xs font-medium rounded ${
-                                tag.belongsTo === "Game"
-                                  ? "bg-blue-100 text-blue-700"
-                                  : "bg-purple-100 text-purple-700"
-                              }`}
-                            >
-                              {tag.belongsTo || "Unknown"}
-                            </span>
-                            {tag.createdAt && (
-                              <p className="text-sm text-gray-500">
-                                • Created{" "}
-                                {new Date(tag.createdAt).toLocaleDateString()}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => handleDeleteTag(tag._id)}
-                        disabled={deletingId === tag._id}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                        title="Delete tag"
-                      >
-                        {deletingId === tag._id ? (
-                          <div className="w-4 h-4 animate-spin rounded-full border-2 border-red-600 border-t-transparent"></div>
-                        ) : (
-                          <Trash2 className="w-4 h-4" />
-                        )}
-                      </button>
-                    </div>
+        <div className="space-y-3">
+          {filteredTags.map((tag) => (
+            <div key={tag._id} className="card">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="w-3 h-3 bg-primary-500 rounded-full mr-3"></div>
+                  <div>
+                    <h3 className="text-lg font-medium text-gray-900">
+                      {tag.name}
+                    </h3>
+                    {tag.createdAt && (
+                      <p className="text-sm text-gray-500">
+                        Created {new Date(tag.createdAt).toLocaleDateString()}
+                      </p>
+                    )}
                   </div>
-                ))}
+                </div>
+                <button
+                  onClick={() => handleDeleteTag(tag._id)}
+                  disabled={deletingId === tag._id}
+                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Delete tag"
+                >
+                  {deletingId === tag._id ? (
+                    <div className="w-4 h-4 animate-spin rounded-full border-2 border-red-600 border-t-transparent"></div>
+                  ) : (
+                    <Trash2 className="w-4 h-4" />
+                  )}
+                </button>
               </div>
             </div>
           ))}

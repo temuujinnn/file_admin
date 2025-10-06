@@ -253,48 +253,6 @@ export default function GameForm({
     }
   };
 
-  const handleGameImageFileSelect = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Validate file type
-      if (!file.type.startsWith("image/")) {
-        toast.error("Please select an image file");
-        return;
-      }
-
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("File size must be less than 5MB");
-        return;
-      }
-
-      setUploadingGameImage(true);
-      try {
-        toast.loading("Uploading image...", {id: "game-image-upload"});
-        const imageUrl = await uploadImage(file);
-
-        setFormData((prev) => ({
-          ...prev,
-          gameImages: [...prev.gameImages, imageUrl],
-        }));
-
-        toast.success("Image uploaded and added!", {id: "game-image-upload"});
-
-        // Reset the file input
-        if (gameImagesInputRef.current) {
-          gameImagesInputRef.current.value = "";
-        }
-      } catch (error) {
-        toast.error("Failed to upload image", {id: "game-image-upload"});
-        console.error("Error uploading game image:", error);
-      } finally {
-        setUploadingGameImage(false);
-      }
-    }
-  };
-
   const handleAddGameImage = () => {
     if (gameImagesInput.trim()) {
       setFormData((prev) => ({
@@ -548,53 +506,7 @@ export default function GameForm({
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Game Images
               </label>
-              <div className="space-y-3">
-                {/* File Upload Section */}
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-gray-400 transition-colors">
-                  <input
-                    ref={gameImagesInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleGameImageFileSelect}
-                    className="hidden"
-                    disabled={uploadingGameImage}
-                  />
-                  <ImageIcon className="w-6 h-6 text-gray-400 mx-auto mb-2" />
-                  <button
-                    type="button"
-                    onClick={() => gameImagesInputRef.current?.click()}
-                    disabled={uploadingGameImage}
-                    className="btn-primary btn-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {uploadingGameImage ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                        Uploading...
-                      </>
-                    ) : (
-                      <>
-                        <Upload className="w-4 h-4 mr-2" />
-                        Upload Image
-                      </>
-                    )}
-                  </button>
-                  <p className="text-xs text-gray-500 mt-2">
-                    PNG, JPG, GIF up to 5MB
-                  </p>
-                </div>
-
-                {/* Or Manual URL Entry */}
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-300"></div>
-                  </div>
-                  <div className="relative flex justify-center text-xs">
-                    <span className="px-2 bg-white text-gray-500">
-                      Or enter URL manually
-                    </span>
-                  </div>
-                </div>
-
+              <div className="space-y-2">
                 <div className="flex gap-2">
                   <input
                     type="url"
@@ -607,7 +519,7 @@ export default function GameForm({
                       }
                     }}
                     className="input-field flex-1"
-                    placeholder="Enter image URL"
+                    placeholder="Enter image URL and press Add"
                   />
                   <button
                     type="button"
@@ -617,35 +529,20 @@ export default function GameForm({
                     Add URL
                   </button>
                 </div>
-
-                {/* Image List */}
                 {formData.gameImages.length > 0 && (
-                  <div className="border border-gray-200 rounded-lg p-3 space-y-2 max-h-40 overflow-y-auto">
-                    <p className="text-xs font-medium text-gray-700 mb-2">
-                      Added Images ({formData.gameImages.length})
-                    </p>
+                  <div className="border border-gray-200 rounded-lg p-3 space-y-2 max-h-32 overflow-y-auto">
                     {formData.gameImages.map((url, index) => (
                       <div
                         key={index}
-                        className="flex items-center gap-2 bg-gray-50 p-2 rounded group"
+                        className="flex items-center justify-between bg-gray-50 p-2 rounded"
                       >
-                        <img
-                          src={getImageUrl(url)}
-                          alt={`Game image ${index + 1}`}
-                          className="w-12 h-12 object-cover rounded border border-gray-200"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src =
-                              "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect fill='%23ddd' width='48' height='48'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23999' font-size='12'%3EError%3C/text%3E%3C/svg%3E";
-                          }}
-                        />
                         <span className="text-sm text-gray-700 truncate flex-1">
                           {url}
                         </span>
                         <button
                           type="button"
                           onClick={() => handleRemoveGameImage(index)}
-                          className="text-red-600 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
-                          title="Remove image"
+                          className="ml-2 text-red-600 hover:text-red-700"
                         >
                           <X className="w-4 h-4" />
                         </button>

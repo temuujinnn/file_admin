@@ -272,22 +272,22 @@ export default function GameForm({
 
       setUploadingGameImage(true);
       try {
-        toast.loading("Uploading image...", {id: "game-image-upload"});
+        toast.loading("Uploading image...", { id: "game-image-upload" });
         const imageUrl = await uploadImage(file);
-
+        
         setFormData((prev) => ({
           ...prev,
           gameImages: [...prev.gameImages, imageUrl],
         }));
-
-        toast.success("Image uploaded and added!", {id: "game-image-upload"});
-
+        
+        toast.success("Image uploaded and added!", { id: "game-image-upload" });
+        
         // Reset the file input
         if (gameImagesInputRef.current) {
           gameImagesInputRef.current.value = "";
         }
       } catch (error) {
-        toast.error("Failed to upload image", {id: "game-image-upload"});
+        toast.error("Failed to upload image", { id: "game-image-upload" });
         console.error("Error uploading game image:", error);
       } finally {
         setUploadingGameImage(false);
@@ -589,9 +589,7 @@ export default function GameForm({
                     <div className="w-full border-t border-gray-300"></div>
                   </div>
                   <div className="relative flex justify-center text-xs">
-                    <span className="px-2 bg-white text-gray-500">
-                      Or enter URL manually
-                    </span>
+                    <span className="px-2 bg-white text-gray-500">Or enter URL manually</span>
                   </div>
                 </div>
 
@@ -634,8 +632,7 @@ export default function GameForm({
                           alt={`Game image ${index + 1}`}
                           className="w-12 h-12 object-cover rounded border border-gray-200"
                           onError={(e) => {
-                            (e.target as HTMLImageElement).src =
-                              "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect fill='%23ddd' width='48' height='48'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23999' font-size='12'%3EError%3C/text%3E%3C/svg%3E";
+                            (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect fill='%23ddd' width='48' height='48'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23999' font-size='12'%3EError%3C/text%3E%3C/svg%3E";
                           }}
                         />
                         <span className="text-sm text-gray-700 truncate flex-1">

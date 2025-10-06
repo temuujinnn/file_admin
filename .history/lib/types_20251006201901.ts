@@ -6,8 +6,6 @@ export interface Game {
   imageUrl: string;
   mainTag: "Game" | "Software";
   additionalTags: (string | AdditionalTag)[];
-  youtubeLink?: string;
-  gameImages?: string[];
   createdAt?: string;
   updatedAt?: string;
 }

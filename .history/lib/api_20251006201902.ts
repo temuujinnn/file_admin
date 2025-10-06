@@ -118,8 +118,6 @@ class ApiClient {
     imageUrl: string;
     mainTag: string;
     additionalTags: string[];
-    youtubeLink?: string;
-    gameImages?: string[];
   }) {
     const response = await this.client.post("/admin/games/game", gameData);
     return response.data;
@@ -133,8 +131,6 @@ class ApiClient {
     imageUrl: string;
     mainTag: string;
     additionalTags: string[];
-    youtubeLink?: string;
-    gameImages?: string[];
   }) {
     const response = await this.client.put("/admin/games/game", gameData);
     return response.data;

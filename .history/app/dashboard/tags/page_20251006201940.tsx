@@ -264,34 +264,18 @@ export default function TagsPage() {
                   <div key={tag._id} className="card">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
-                        <div
-                          className={`w-3 h-3 rounded-full mr-3 ${
-                            belongsTo === "Game"
-                              ? "bg-blue-500"
-                              : "bg-purple-500"
-                          }`}
-                        ></div>
+                        <div className={`w-3 h-3 rounded-full mr-3 ${
+                          belongsTo === "Game" ? "bg-blue-500" : "bg-purple-500"
+                        }`}></div>
                         <div>
                           <h3 className="text-lg font-medium text-gray-900">
                             {tag.name}
                           </h3>
-                          <div className="flex items-center gap-2 mt-1">
-                            <span
-                              className={`px-2 py-0.5 text-xs font-medium rounded ${
-                                tag.belongsTo === "Game"
-                                  ? "bg-blue-100 text-blue-700"
-                                  : "bg-purple-100 text-purple-700"
-                              }`}
-                            >
-                              {tag.belongsTo || "Unknown"}
-                            </span>
-                            {tag.createdAt && (
-                              <p className="text-sm text-gray-500">
-                                • Created{" "}
-                                {new Date(tag.createdAt).toLocaleDateString()}
-                              </p>
-                            )}
-                          </div>
+                          {tag.createdAt && (
+                            <p className="text-sm text-gray-500">
+                              Created {new Date(tag.createdAt).toLocaleDateString()}
+                            </p>
+                          )}
                         </div>
                       </div>
                       <button
